@@ -1,6 +1,7 @@
+/* eslint-disable no-undef */
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
-const fortune = require('./lib/fortune')
+// const fortune = require('./lib/fortune')
 const handlers = require('./lib/handlers')
 
 const app = express()
@@ -40,13 +41,24 @@ app.use(express.static(__dirname + '/public'))
 app.get('/', handlers.home)
 app.get('/about', handlers.about)
 
+app.get('/headers', (req, res) => {
+    res.type('text/plain')
+    const headers = Object.entries(req.headers)
+        .map(([key, value]) => `${key}: ${value}`)
+    res.send(headers.join('\n'))
+})
+
 // custom 404 page
 app.use(handlers.notFound)
 
 // custom 500 page
 app.use(handlers.serverError)
 
-app.listen(port, () => console.log(
-    `Express started on http://localhost:${port}; ` +
-    `press Crtl-C to terminate.`
-))
+if(require.main === module) {
+    app.listen(port, () => {
+        console.log( `Express started on http://localhost:${port}` +
+            '; press Ctrl-C to terminate.' )
+    })
+} else {
+    module.exports = app
+}
