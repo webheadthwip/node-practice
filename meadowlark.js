@@ -3,6 +3,10 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 // const fortune = require('./lib/fortune')
 const handlers = require('./lib/handlers')
+const bodyParser =  require('body-parser')
+const { credentials } = require('./config')
+
+app.use(bodyParser.urlencoded({extended: true}))
 
 const app = express()
 const port = process.env.PORT || 3000
